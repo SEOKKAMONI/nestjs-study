@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -20,25 +22,35 @@ export class TodoController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Todo | null> {
-    return this.todoService.findOne(id);
+  async findOne(@Param('id') id: Todo['id']): Promise<Todo | null> {
+    const todo = await this.todoService.findOne(id);
+    if (!todo) {
+      throw new NotFoundException(`Todo with id ${id} not found`);
+    }
+    return todo;
   }
 
   @Post()
   async create(@Body() todo: Todo): Promise<Todo> {
+    if (!todo.title) {
+      throw new BadRequestException('Title is required');
+    }
     return this.todoService.create(todo);
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: Todo['id'],
     @Body() todo: Todo,
   ): Promise<Todo | null> {
+    if (!todo.title) {
+      throw new BadRequestException('Title is required');
+    }
     return this.todoService.update(id, todo);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@Param('id') id: Todo['id']): Promise<void> {
     return this.todoService.delete(id);
   }
 }
