@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { databaseProviders } from './database/database.providers';
 import { ConfigModule } from '@nestjs/config';
+import { databaseProviders } from './config/database/database.providers';
+import { TodoModule } from './todo/todo.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TodoModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, ...databaseProviders],
+  providers: [...databaseProviders],
 })
 export class AppModule {}
