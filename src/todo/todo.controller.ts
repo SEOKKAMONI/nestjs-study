@@ -13,8 +13,8 @@ import { TodoService } from './todo.service';
 import { Todo } from './entities/todo.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('todos')
-@Controller('todos')
+@ApiTags('todo')
+@Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
