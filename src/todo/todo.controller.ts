@@ -11,7 +11,9 @@ import {
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Todo } from './entities/todo.entity';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('todos')
 @Controller('todos')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
@@ -21,6 +23,7 @@ export class TodoController {
     return this.todoService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get a todo by id' })
   @Get(':id')
   async findOne(@Param('id') id: Todo['id']): Promise<Todo | null> {
     const todo = await this.todoService.findOne(id);
@@ -30,6 +33,7 @@ export class TodoController {
     return todo;
   }
 
+  @ApiOperation({ summary: 'Create a new todo' })
   @Post()
   async create(@Body() todo: Todo): Promise<Todo> {
     if (!todo.title) {
@@ -38,6 +42,7 @@ export class TodoController {
     return this.todoService.create(todo);
   }
 
+  @ApiOperation({ summary: 'Update a todo by id' })
   @Put(':id')
   async update(
     @Param('id') id: Todo['id'],
