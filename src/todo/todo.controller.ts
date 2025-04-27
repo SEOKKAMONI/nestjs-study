@@ -10,8 +10,16 @@ import {
   Put,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { Todo } from './entities/todo.entity';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { TodoResponseDto } from './dtos/responses/todo.dto';
+import { CreateTodoRequestDto } from './dtos/requests/create-todo.dto';
+import { UpdateTodoRequestDto } from './dtos/requests/update-todo.dto';
 
 @ApiTags('todo')
 @Controller('todo')
@@ -19,13 +27,25 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Get()
-  async findAll(): Promise<Todo[]> {
+  @ApiOperation({ summary: 'Get all todos' })
+  @ApiResponse({
+    status: 200,
+    description: 'The list of todos',
+    type: TodoResponseDto,
+    isArray: true,
+  })
+  async findAll(): Promise<TodoResponseDto[]> {
     return this.todoService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get a todo by id' })
   @Get(':id')
-  async findOne(@Param('id') id: Todo['id']): Promise<Todo | null> {
+  @ApiOperation({ summary: 'Get a todo by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The todo',
+    type: TodoResponseDto,
+  })
+  async findOne(@Param('id') id: string): Promise<TodoResponseDto | null> {
     const todo = await this.todoService.findOne(id);
     if (!todo) {
       throw new NotFoundException(`Todo with id ${id} not found`);
@@ -33,29 +53,64 @@ export class TodoController {
     return todo;
   }
 
-  @ApiOperation({ summary: 'Create a new todo' })
   @Post()
-  async create(@Body() todo: Todo): Promise<Todo> {
-    if (!todo.title) {
+  @ApiOperation({ summary: 'Create a new todo' })
+  @ApiResponse({
+    status: 201,
+    description: 'The created todo',
+    type: TodoResponseDto,
+  })
+  @ApiBody({
+    description: 'The todo to create',
+    type: CreateTodoRequestDto,
+  })
+  async create(
+    @Body() createTodoRequestDto: CreateTodoRequestDto,
+  ): Promise<TodoResponseDto> {
+    if (!createTodoRequestDto.title) {
       throw new BadRequestException('Title is required');
     }
-    return this.todoService.create(todo);
+    return this.todoService.create(createTodoRequestDto);
   }
 
-  @ApiOperation({ summary: 'Update a todo by id' })
   @Put(':id')
+  @ApiOperation({ summary: 'Update a todo by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The updated todo',
+    type: TodoResponseDto,
+  })
+  @ApiBody({
+    description: 'The todo to update',
+    type: UpdateTodoRequestDto,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The id of the todo',
+    type: String,
+  })
   async update(
-    @Param('id') id: Todo['id'],
-    @Body() todo: Todo,
-  ): Promise<Todo | null> {
-    if (!todo.title) {
+    @Param('id') id: string,
+    @Body() updateTodoRequestDto: UpdateTodoRequestDto,
+  ): Promise<TodoResponseDto | null> {
+    if (!updateTodoRequestDto.title) {
       throw new BadRequestException('Title is required');
     }
-    return this.todoService.update(id, todo);
+    return this.todoService.update(id, updateTodoRequestDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: Todo['id']): Promise<void> {
+  @ApiOperation({ summary: 'Delete a todo by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The deleted todo',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The id of the todo',
+    type: String,
+  })
+  async delete(@Param('id') id: string): Promise<void> {
     return this.todoService.delete(id);
   }
 }

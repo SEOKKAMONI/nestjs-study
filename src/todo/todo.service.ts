@@ -1,5 +1,8 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { CreateTodoRequestDto } from './dtos/requests/create-todo.dto';
+import { TodoResponseDto } from './dtos/responses/todo.dto';
+import { UpdateTodoRequestDto } from './dtos/requests/update-todo.dto';
 import { Todo } from './entities/todo.entity';
 
 @Injectable()
@@ -9,30 +12,35 @@ export class TodoService {
     private todoRepository: Repository<Todo>,
   ) {}
 
-  async findAll(): Promise<Todo[]> {
+  async findAll(): Promise<TodoResponseDto[]> {
     return this.todoRepository.find();
   }
 
-  async findOne(id: Todo['id']): Promise<Todo | null> {
+  async findOne(id: string): Promise<TodoResponseDto | null> {
     return this.todoRepository.findOneBy({ id });
   }
 
-  async create(todo: Todo): Promise<Todo> {
+  async create(
+    createTodoRequestDto: CreateTodoRequestDto,
+  ): Promise<TodoResponseDto> {
     const existingTodo = await this.todoRepository.findOneBy({
-      title: todo.title,
+      title: createTodoRequestDto.title,
     });
     if (existingTodo) {
       throw new BadRequestException('Todo already exists');
     }
-    return this.todoRepository.save(todo);
+    return this.todoRepository.create(createTodoRequestDto);
   }
 
-  async update(id: Todo['id'], todo: Todo): Promise<Todo | null> {
-    await this.todoRepository.update(id, todo);
+  async update(
+    id: string,
+    updateTodoRequestDto: UpdateTodoRequestDto,
+  ): Promise<TodoResponseDto | null> {
+    await this.todoRepository.update(id, updateTodoRequestDto);
     return this.findOne(id);
   }
 
-  async delete(id: Todo['id']): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.todoRepository.delete(id);
   }
 }
