@@ -20,6 +20,7 @@ import {
 import { TodoResponseDto } from './dtos/responses/todo.dto';
 import { CreateTodoRequestDto } from './dtos/requests/create-todo.dto';
 import { UpdateTodoRequestDto } from './dtos/requests/update-todo.dto';
+import { Todo } from './entities/todo.entity';
 
 @ApiTags('todo')
 @Controller('todo')
@@ -45,7 +46,7 @@ export class TodoController {
     description: 'The todo',
     type: TodoResponseDto,
   })
-  async findOne(@Param('id') id: string): Promise<TodoResponseDto | null> {
+  async findOne(@Param('id') id: Todo['id']): Promise<TodoResponseDto | null> {
     const todo = await this.todoService.findOne(id);
     if (!todo) {
       throw new NotFoundException(`Todo with id ${id} not found`);
@@ -56,7 +57,6 @@ export class TodoController {
   @Post()
   @ApiOperation({ summary: 'Create a new todo' })
   @ApiResponse({
-    status: 201,
     description: 'The created todo',
     type: TodoResponseDto,
   })
@@ -90,7 +90,7 @@ export class TodoController {
     type: String,
   })
   async update(
-    @Param('id') id: string,
+    @Param('id') id: Todo['id'],
     @Body() updateTodoRequestDto: UpdateTodoRequestDto,
   ): Promise<TodoResponseDto | null> {
     if (!updateTodoRequestDto.title) {
@@ -110,7 +110,7 @@ export class TodoController {
     description: 'The id of the todo',
     type: String,
   })
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@Param('id') id: Todo['id']): Promise<void> {
     return this.todoService.delete(id);
   }
 }

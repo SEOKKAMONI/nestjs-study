@@ -16,7 +16,7 @@ export class TodoService {
     return this.todoRepository.find();
   }
 
-  async findOne(id: string): Promise<TodoResponseDto | null> {
+  async findOne(id: Todo['id']): Promise<TodoResponseDto | null> {
     return this.todoRepository.findOneBy({ id });
   }
 
@@ -29,11 +29,11 @@ export class TodoService {
     if (existingTodo) {
       throw new BadRequestException('Todo already exists');
     }
-    return this.todoRepository.create(createTodoRequestDto);
+    return this.todoRepository.save(createTodoRequestDto);
   }
 
   async update(
-    id: string,
+    id: Todo['id'],
     updateTodoRequestDto: UpdateTodoRequestDto,
   ): Promise<TodoResponseDto | null> {
     await this.todoRepository.update(id, updateTodoRequestDto);
