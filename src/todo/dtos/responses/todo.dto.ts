@@ -1,52 +1,48 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  Column,
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+  IsBoolean,
+  IsDate,
+  IsString,
+  IsUUID,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class TodoResponseDto {
   @ApiProperty({
     description: 'The id of the todo',
     example: '550e8400-e29b-41d4-a716-446655440000',
-    type: String,
   })
-  @PrimaryGeneratedColumn('uuid')
+  @IsUUID()
   id: string;
 
   @ApiProperty({
     description: 'The title of the todo',
     example: 'Buy groceries',
-    type: String,
-    minLength: 1,
-    maxLength: 255,
   })
-  @Column({ length: 255 })
+  @MinLength(1)
+  @MaxLength(255)
+  @IsString()
   title: string;
 
   @ApiProperty({
     description: 'Whether the todo is completed',
     example: false,
-    type: Boolean,
-    default: false,
   })
-  @Column({ default: false })
+  @IsBoolean()
   isCompleted: boolean;
 
   @ApiProperty({
     description: 'The created at date of the todo',
     example: '2021-01-01T00:00:00.000Z',
-    type: Date,
   })
-  @CreateDateColumn()
+  @IsDate()
   createdAt: Date;
 
   @ApiProperty({
     description: 'The updated at date of the todo',
     example: '2021-01-01T00:00:00.000Z',
-    type: Date,
   })
-  @UpdateDateColumn()
+  @IsDate()
   updatedAt: Date;
 }

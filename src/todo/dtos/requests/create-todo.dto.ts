@@ -1,23 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column } from 'typeorm';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateTodoRequestDto {
   @ApiProperty({
     description: 'The title of the todo',
     example: 'Buy groceries',
-    type: String,
-    minLength: 1,
-    maxLength: 255,
   })
-  @Column({ length: 255 })
+  @MinLength(1)
+  @MaxLength(255)
+  @IsNotEmpty()
+  @IsString()
   title: string;
 
   @ApiProperty({
     description: 'Whether the todo is completed',
     example: false,
-    type: Boolean,
     default: false,
   })
-  @Column({ default: false, nullable: true })
-  isCompleted: boolean;
+  @IsOptional()
+  @IsBoolean()
+  isCompleted?: boolean;
 }

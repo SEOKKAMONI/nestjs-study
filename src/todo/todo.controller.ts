@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -46,6 +45,11 @@ export class TodoController {
     description: 'The todo',
     type: TodoResponseDto,
   })
+  @ApiParam({
+    name: 'id',
+    description: 'The id of the todo',
+    type: String,
+  })
   async findOne(@Param('id') id: Todo['id']): Promise<TodoResponseDto | null> {
     const todo = await this.todoService.findOne(id);
     if (!todo) {
@@ -67,9 +71,6 @@ export class TodoController {
   async create(
     @Body() createTodoRequestDto: CreateTodoRequestDto,
   ): Promise<TodoResponseDto> {
-    if (!createTodoRequestDto.title) {
-      throw new BadRequestException('Title is required');
-    }
     return this.todoService.create(createTodoRequestDto);
   }
 
@@ -93,9 +94,6 @@ export class TodoController {
     @Param('id') id: Todo['id'],
     @Body() updateTodoRequestDto: UpdateTodoRequestDto,
   ): Promise<TodoResponseDto | null> {
-    if (!updateTodoRequestDto.title) {
-      throw new BadRequestException('Title is required');
-    }
     return this.todoService.update(id, updateTodoRequestDto);
   }
 
