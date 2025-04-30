@@ -28,6 +28,7 @@ export class TodoResponseDto {
   @ApiProperty({
     description: 'Whether the todo is completed',
     example: false,
+    default: false,
   })
   @IsBoolean()
   isCompleted: boolean;
