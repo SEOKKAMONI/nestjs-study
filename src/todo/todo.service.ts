@@ -16,7 +16,7 @@ export class TodoService {
     return this.todoRepository.find();
   }
 
-  async findOne(id: Todo['id']): Promise<TodoResponseDto | null> {
+  async findOne(id: string): Promise<TodoResponseDto | null> {
     return this.todoRepository.findOneBy({ id });
   }
 
@@ -33,7 +33,7 @@ export class TodoService {
   }
 
   async update(
-    id: Todo['id'],
+    id: string,
     updateTodoRequestDto: UpdateTodoRequestDto,
   ): Promise<TodoResponseDto | null> {
     await this.todoRepository.update(id, updateTodoRequestDto);
