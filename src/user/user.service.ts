@@ -12,16 +12,18 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async findOne(id: string): Promise<UserResponseDto | null> {
+  async findOneById(id: string): Promise<UserResponseDto | null> {
     return this.userRepository.findOneBy({ id });
+  }
+
+  async findOneByEmail(email: string): Promise<UserResponseDto | null> {
+    return this.userRepository.findOneBy({ email });
   }
 
   async create(
     createUserRequestDto: CreateUserRequestDto,
   ): Promise<UserResponseDto> {
-    const existingUser = await this.userRepository.findOneBy({
-      email: createUserRequestDto.email,
-    });
+    const existingUser = await this.findOneByEmail(createUserRequestDto.email);
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
@@ -33,7 +35,7 @@ export class UserService {
     updateUserRequestDto: UpdateUserRequestDto,
   ): Promise<UserResponseDto | null> {
     await this.userRepository.update(id, updateUserRequestDto);
-    return this.findOne(id);
+    return this.findOneById(id);
   }
 
   async delete(id: string): Promise<void> {
