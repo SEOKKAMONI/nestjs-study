@@ -1,8 +1,18 @@
-import { Controller, Get, Req, UseGuards, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  UseGuards,
+  UnauthorizedException,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
-import { User } from 'src/user/entities/user.entity';
+import { RefreshTokenRequestDto } from './dtos/requests/refresh-token.dto';
+import { TokensResponseDto } from './dtos/responses/tokens.dto';
+import { AccessTokenResponseDto } from './dtos/responses/access-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,16 +24,25 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleAuthCallback(@Req() request: Request, @Res() response: Response) {
-    const { accessToken } = this.authService.login(request.user as User);
-    response.redirect(
-      `http://localhost:3000/auth/google/success?token=${accessToken}`,
-    );
+  googleAuthCallback(@Req() req: Request): TokensResponseDto {
+    if (!req.user) {
+      throw new UnauthorizedException(
+        'User was not found after Google authentication.',
+      );
+    }
+
+    return this.authService.loginWithGoogle(req.user);
   }
 
-  @Get('profile')
-  @UseGuards(AuthGuard('jwt'))
-  getProfile(@Req() request: Request) {
-    return request.user;
+  @Post('refresh')
+  refreshAccessToken(
+    @Body() refreshTokenRequestDto: RefreshTokenRequestDto,
+  ): AccessTokenResponseDto {
+    const { refreshToken } = refreshTokenRequestDto;
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token provided.');
+    }
+
+    return this.authService.refreshAccessToken(refreshToken);
   }
 }

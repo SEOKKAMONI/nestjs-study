@@ -3,13 +3,13 @@ import { Repository } from 'typeorm';
 import { CreateTodoRequestDto } from './dtos/requests/create-todo.dto';
 import { TodoResponseDto } from './dtos/responses/todo.dto';
 import { UpdateTodoRequestDto } from './dtos/requests/update-todo.dto';
-import { Todo } from './entities/todo.entity';
+import { TodoEntity } from './entities/todo.entity';
 
 @Injectable()
 export class TodoService {
   constructor(
     @Inject('TODO_REPOSITORY')
-    private todoRepository: Repository<Todo>,
+    private todoRepository: Repository<TodoEntity>,
   ) {}
 
   async findAll(): Promise<TodoResponseDto[]> {

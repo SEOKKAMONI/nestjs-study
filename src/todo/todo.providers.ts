@@ -1,10 +1,11 @@
 import { DataSource } from 'typeorm';
-import { Todo } from './entities/todo.entity';
+import { TodoEntity } from './entities/todo.entity';
 
 export const todoProviders = [
   {
     provide: 'TODO_REPOSITORY',
-    useFactory: (dataSource: DataSource) => dataSource.getRepository(Todo),
+    useFactory: (dataSource: DataSource) =>
+      dataSource.getRepository(TodoEntity),
     inject: ['DATA_SOURCE'],
   },
 ];

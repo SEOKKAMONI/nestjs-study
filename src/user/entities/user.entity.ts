@@ -6,13 +6,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('users')
-export class User {
+@Entity('user')
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
-  email: string;
+  @Column({ nullable: true, unique: true })
+  email?: string;
 
   @Column({ nullable: true })
   firstName?: string;
@@ -23,7 +23,7 @@ export class User {
   @Column({ nullable: true })
   photo?: string;
 
-  @Column({ enum: ['google'] })
+  @Column({ type: 'enum', enum: ['google'], default: 'google' })
   provider: 'google';
 
   @Column({ unique: true })

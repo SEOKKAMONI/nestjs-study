@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserResponseDto } from 'src/user/dtos/responses/user.dto';
-import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
+import { UserProfile } from './interfaces/user-profile.interface';
+import { User } from 'src/common/interfaces/user.interface';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { TokensResponseDto } from './dtos/responses/tokens.dto';
+import { AccessTokenResponseDto } from './dtos/responses/access-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,13 +15,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validate(userDetail: any): Promise<UserResponseDto> {
+  async validate(userProfile: UserProfile): Promise<UserResponseDto> {
     const { email, firstName, lastName, photo, provider, providerId } =
-      userDetail;
-    let user = await this.userService.findOneByEmail(email);
+      userProfile;
+    let user = await this.userService.findOneByProviderId(providerId);
     if (!user) {
       user = await this.userService.create({
-        email: email,
+        email,
         firstName,
         lastName,
         photo,
@@ -29,8 +32,23 @@ export class AuthService {
     return user;
   }
 
-  login(user: User) {
-    const payload = { id: user.id, email: user.email };
-    return { accessToken: this.jwtService.sign(payload), user };
+  loginWithGoogle(user: User): TokensResponseDto {
+    const payload: JwtPayload = {
+      sub: user.id,
+      provider: user.provider,
+    };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    return { accessToken, refreshToken };
+  }
+
+  refreshAccessToken(refreshToken: string): AccessTokenResponseDto {
+    const payload: JwtPayload = this.jwtService.verify(refreshToken);
+    const accessToken = this.jwtService.sign(
+      { sub: payload.sub, provider: payload.provider },
+      { expiresIn: '1h' },
+    );
+
+    return { accessToken };
   }
 }

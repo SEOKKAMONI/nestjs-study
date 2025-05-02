@@ -11,14 +11,13 @@ import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [
-    PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || '',
-        signOptions: { expiresIn: '1h' },
       }),
     }),
+    PassportModule,
     UserModule,
   ],
   controllers: [AuthController],

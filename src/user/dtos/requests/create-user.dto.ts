@@ -6,8 +6,9 @@ export class CreateUserRequestDto {
     description: 'The email of the user',
     example: 'example@gmail.com',
   })
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @ApiProperty({
     description: 'The firstName of the user',

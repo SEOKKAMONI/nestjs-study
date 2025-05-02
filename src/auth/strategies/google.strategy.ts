@@ -23,19 +23,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     _refreshToken: string,
     profile: Profile,
     done: VerifyCallback,
-  ): Promise<any> {
+  ): Promise<void> {
     const { name, emails, photos, id, provider } = profile;
 
-    const user = {
+    const user = await this.authService.validate({
       email: emails?.[0].value,
       firstName: name?.givenName,
       lastName: name?.familyName,
       photo: photos?.[0].value,
       provider,
       providerId: id,
-    };
+    });
 
-    const validatedUser = await this.authService.validate(user);
-    done(null, validatedUser);
+    done(null, user);
   }
 }

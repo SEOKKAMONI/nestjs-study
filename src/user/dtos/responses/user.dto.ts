@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDate,
   IsEmail,
+  IsEnum,
   IsOptional,
   IsString,
   IsUrl,
@@ -20,8 +21,9 @@ export class UserResponseDto {
     description: 'The email of the user',
     example: 'example@gmail.com',
   })
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @ApiProperty({
     description: 'The firstName of the user',
@@ -46,6 +48,13 @@ export class UserResponseDto {
   @IsOptional()
   @IsUrl()
   photo?: string;
+
+  @ApiProperty({
+    description: 'The provider of the user',
+    example: 'google',
+  })
+  @IsEnum(['google'])
+  provider: 'google';
 
   @ApiProperty({
     description: 'The providerId of the user',
