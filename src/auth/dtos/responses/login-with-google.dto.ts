@@ -1,6 +1,9 @@
 import { IsString } from 'class-validator';
 
-export class AccessTokenResponseDto {
+export class LoginWithGoogleResponseDto {
   @IsString()
   accessToken: string;
+
+  @IsString()
+  refreshToken: string;
 }

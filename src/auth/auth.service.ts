@@ -5,8 +5,9 @@ import { UserService } from 'src/user/user.service';
 import { UserProfile } from './interfaces/user-profile.interface';
 import { User } from 'src/common/interfaces/user.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { TokensResponseDto } from './dtos/responses/tokens.dto';
-import { AccessTokenResponseDto } from './dtos/responses/access-token.dto';
+import { LoginWithGoogleResponseDto } from './dtos/responses/login-with-google.dto';
+import { RefreshAccessTokenResponseDto } from './dtos/responses/refresh-access-token.dto';
+import { RefreshAccessTokenRequestDto } from './dtos/requests/refresh-access-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +33,7 @@ export class AuthService {
     return user;
   }
 
-  loginWithGoogle(user: User): TokensResponseDto {
+  loginWithGoogle(user: User): LoginWithGoogleResponseDto {
     const payload: JwtPayload = {
       sub: user.id,
       provider: user.provider,
@@ -42,7 +43,10 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  refreshAccessToken(refreshToken: string): AccessTokenResponseDto {
+  refreshAccessToken(
+    refreshAccessTokenRequestDto: RefreshAccessTokenRequestDto,
+  ): RefreshAccessTokenResponseDto {
+    const { refreshToken } = refreshAccessTokenRequestDto;
     const payload: JwtPayload = this.jwtService.verify(refreshToken);
     const accessToken = this.jwtService.sign(
       { sub: payload.sub, provider: payload.provider },
