@@ -60,6 +60,7 @@ export class TodoController {
   @Post()
   @ApiOperation({ summary: 'Create a new todo' })
   @ApiResponse({
+    status: 201,
     description: 'The created todo',
     type: TodoResponseDto,
   })
