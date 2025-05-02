@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDate,
   IsEmail,
-  IsEnum,
   IsOptional,
   IsString,
   IsUrl,
   IsUUID,
 } from 'class-validator';
+import { IsAuthProvider } from 'src/common/decorators/IsAuthProvider';
 
 export class UserResponseDto {
   @ApiProperty({
@@ -53,7 +53,7 @@ export class UserResponseDto {
     description: 'The provider of the user',
     example: 'google',
   })
-  @IsEnum(['google'])
+  @IsAuthProvider()
   provider: 'google';
 
   @ApiProperty({

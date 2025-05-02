@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserResponseDto } from 'src/user/dtos/responses/user.dto';
 import { UserService } from 'src/user/user.service';
-import { UserProfile } from './interfaces/user-profile.interface';
-import { User } from 'src/common/interfaces/user.interface';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtPayload } from './strategies/jwt.strategy';
 import { LoginWithGoogleResponseDto } from './dtos/responses/login-with-google.dto';
 import { RefreshAccessTokenResponseDto } from './dtos/responses/refresh-access-token.dto';
 import { RefreshAccessTokenRequestDto } from './dtos/requests/refresh-access-token.dto';
+import { ValidateRequestDto } from './dtos/requests/validate.dto';
+import { LoginWithGoogleRequestDto } from './dtos/requests/login-with-google.dto';
+import { ValidateResponseDto } from './dtos/responses/validate.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,9 +16,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validate(userProfile: UserProfile): Promise<UserResponseDto> {
+  async validate(
+    validateRequestDto: ValidateRequestDto,
+  ): Promise<ValidateResponseDto> {
     const { email, firstName, lastName, photo, provider, providerId } =
-      userProfile;
+      validateRequestDto;
     let user = await this.userService.findOneByProviderId(providerId);
     if (!user) {
       user = await this.userService.create({
@@ -33,10 +35,13 @@ export class AuthService {
     return user;
   }
 
-  loginWithGoogle(user: User): LoginWithGoogleResponseDto {
+  loginWithGoogle(
+    loginWithGoogleRequestDto: LoginWithGoogleRequestDto,
+  ): LoginWithGoogleResponseDto {
+    const { id, provider } = loginWithGoogleRequestDto;
     const payload: JwtPayload = {
-      sub: user.id,
-      provider: user.provider,
+      sub: id,
+      provider,
     };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });

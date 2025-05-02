@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
 import { RefreshAccessTokenRequestDto } from './dtos/requests/refresh-access-token.dto';
 import { LoginWithGoogleResponseDto } from './dtos/responses/login-with-google.dto';
 import { RefreshAccessTokenResponseDto } from './dtos/responses/refresh-access-token.dto';
+import { LoginWithGoogleRequestDto } from './dtos/requests/login-with-google.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,7 +31,9 @@ export class AuthController {
         'User was not found after Google authentication.',
       );
     }
-    return this.authService.loginWithGoogle(request.user);
+    return this.authService.loginWithGoogle(
+      request.user as LoginWithGoogleRequestDto,
+    );
   }
 
   @Post('refresh')

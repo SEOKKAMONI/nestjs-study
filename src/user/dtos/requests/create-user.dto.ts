@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsAuthProvider } from 'src/common/decorators/IsAuthProvider';
 
 export class CreateUserRequestDto {
   @ApiProperty({
@@ -38,7 +39,7 @@ export class CreateUserRequestDto {
     description: 'The provider of the user',
     example: 'google',
   })
-  @IsEnum(['google'])
+  @IsAuthProvider()
   provider: 'google';
 
   @ApiProperty({
