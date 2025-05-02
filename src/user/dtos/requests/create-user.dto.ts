@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateUserRequestDto {
   @ApiProperty({
@@ -14,6 +14,7 @@ export class CreateUserRequestDto {
     example: 'kim',
   })
   @IsOptional()
+  @IsString()
   firstName?: string;
 
   @ApiProperty({
@@ -25,18 +26,24 @@ export class CreateUserRequestDto {
   lastName?: string;
 
   @ApiProperty({
-    description: 'The profileImage of the user',
+    description: 'The photo of the user',
     example: 'https://lh3.googleusercontent.com/...',
   })
   @IsOptional()
   @IsUrl()
-  profileImage?: string;
+  photo?: string;
 
   @ApiProperty({
-    description: 'The googleId of the user',
+    description: 'The provider of the user',
+    example: 'google',
+  })
+  @IsEnum(['google'])
+  provider: 'google';
+
+  @ApiProperty({
+    description: 'The providerId of the user',
     example: '123456789012345678901',
   })
-  @IsOptional()
   @IsString()
-  googleId?: string;
+  providerId: string;
 }

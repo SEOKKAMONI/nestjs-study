@@ -28,6 +28,7 @@ export class UserResponseDto {
     example: 'kim',
   })
   @IsOptional()
+  @IsString()
   firstName?: string;
 
   @ApiProperty({
@@ -39,20 +40,19 @@ export class UserResponseDto {
   lastName?: string;
 
   @ApiProperty({
-    description: 'The profileImage of the user',
+    description: 'The photo of the user',
     example: 'https://lh3.googleusercontent.com/...',
   })
   @IsOptional()
   @IsUrl()
-  profileImage?: string;
+  photo?: string;
 
   @ApiProperty({
-    description: 'The googleId of the user',
+    description: 'The providerId of the user',
     example: '123456789012345678901',
   })
-  @IsOptional()
   @IsString()
-  googleId?: string;
+  providerId: string;
 
   @ApiProperty({
     description: 'The created at date of the user',

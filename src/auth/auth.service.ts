@@ -13,15 +13,17 @@ export class AuthService {
   ) {}
 
   async validate(userDetail: any): Promise<UserResponseDto> {
-    const { email, firstName, lastName, profileImage, googleId } = userDetail;
+    const { email, firstName, lastName, photo, provider, providerId } =
+      userDetail;
     let user = await this.userService.findOneByEmail(email);
     if (!user) {
       user = await this.userService.create({
         email: email,
         firstName,
         lastName,
-        profileImage,
-        googleId,
+        photo,
+        provider,
+        providerId,
       });
     }
     return user;

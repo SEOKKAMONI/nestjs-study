@@ -15,16 +15,19 @@ export class User {
   email: string;
 
   @Column({ nullable: true })
-  firstName: string;
+  firstName?: string;
 
   @Column({ nullable: true })
-  lastName: string;
+  lastName?: string;
 
   @Column({ nullable: true })
-  profileImage: string;
+  photo?: string;
 
-  @Column({ nullable: true, unique: true })
-  googleId: string;
+  @Column({ enum: ['google'] })
+  provider: 'google';
+
+  @Column({ unique: true })
+  providerId: string;
 
   @CreateDateColumn()
   createdAt: Date;

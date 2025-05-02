@@ -6,9 +6,8 @@ export class UpdateUserRequestDto {
     description: 'The email of the user',
     example: 'example@gmail.com',
   })
-  @IsOptional()
   @IsEmail()
-  email?: string;
+  email: string;
 
   @ApiProperty({
     description: 'The firstName of the user',
@@ -26,10 +25,10 @@ export class UpdateUserRequestDto {
   lastName?: string;
 
   @ApiProperty({
-    description: 'The profileImage of the user',
+    description: 'The photo of the user',
     example: 'https://lh3.googleusercontent.com/...',
   })
   @IsOptional()
   @IsUrl()
-  profileImage?: string;
+  photo?: string;
 }
