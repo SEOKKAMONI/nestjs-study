@@ -7,12 +7,12 @@ import {
   Post,
   Body,
   HttpCode,
+  Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { RefreshAccessTokenRequestDto } from './dtos/requests/refresh-access-token.dto';
-import { LoginWithGoogleResponseDto } from './dtos/responses/login-with-google.dto';
 import { RefreshAccessTokenResponseDto } from './dtos/responses/refresh-access-token.dto';
 import { LoginWithGoogleRequestDto } from './dtos/requests/login-with-google.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -30,19 +30,23 @@ export class AuthController {
   googleAuth() {}
 
   @Get('google/callback')
+  @HttpCode(302)
   @UseGuards(AuthGuard('google'))
-  @ApiOperation({ summary: 'Google OAuth callback' })
+  @ApiOperation({ summary: 'Handle Google OAuth callback' })
   @ApiResponse({
-    status: 200,
-    description: 'Login success with Google',
-    type: LoginWithGoogleResponseDto,
+    status: 302,
+    description:
+      'Successfully authenticated with Google. Redirects to the frontend with access and refresh tokens as query parameters.',
   })
-  googleAuthCallback(@Req() request: Request): LoginWithGoogleResponseDto {
+  googleAuthCallback(@Req() request: Request, @Res() response: Response) {
     if (!request.user) {
       throw new UnauthorizedException('User was not found after Google auth.');
     }
-    return this.authService.loginWithGoogle(
+    const { accessToken, refreshToken } = this.authService.loginWithGoogle(
       request.user as LoginWithGoogleRequestDto,
+    );
+    response.redirect(
+      `http://localhost:3000/auth/google/success?access_token=${accessToken}&refresh_token=${refreshToken}`,
     );
   }
 
