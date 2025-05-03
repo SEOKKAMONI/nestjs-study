@@ -39,20 +39,20 @@ export class AuthController {
     description:
       'Successfully authenticated with Google. Redirects to the frontend with access and refresh tokens as query parameters.',
   })
-  googleAuthCallback(@Req() request: Request, @Res() response: Response) {
-    if (!request.user) {
+  googleAuthCallback(@Req() req: Request, @Res() res: Response) {
+    if (!req.user) {
       throw new UnauthorizedException('User was not found after Google auth.');
     }
 
     const loginWithGoogleRequestDto = {
-      userId: request.user.id,
-      provider: request.user.provider,
+      userId: req.user.id,
+      provider: req.user.provider,
     };
 
     const { accessToken, refreshToken } = this.authService.loginWithGoogle(
       loginWithGoogleRequestDto,
     );
-    response.redirect(
+    res.redirect(
       `http://localhost:3000/auth/google/success?access_token=${accessToken}&refresh_token=${refreshToken}`,
     );
   }
