@@ -14,7 +14,6 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { RefreshAccessTokenRequestDto } from './dtos/requests/refresh-access-token.dto';
 import { RefreshAccessTokenResponseDto } from './dtos/responses/refresh-access-token.dto';
-import { LoginWithGoogleRequestDto } from './dtos/requests/login-with-google.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
@@ -42,8 +41,14 @@ export class AuthController {
     if (!request.user) {
       throw new UnauthorizedException('User was not found after Google auth.');
     }
+
+    const loginWithGoogleRequestDto = {
+      userId: request.user.id,
+      provider: request.user.provider,
+    };
+
     const { accessToken, refreshToken } = this.authService.loginWithGoogle(
-      request.user as LoginWithGoogleRequestDto,
+      loginWithGoogleRequestDto,
     );
     response.redirect(
       `http://localhost:3000/auth/google/success?access_token=${accessToken}&refresh_token=${refreshToken}`,

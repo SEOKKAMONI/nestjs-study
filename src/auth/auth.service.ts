@@ -38,9 +38,9 @@ export class AuthService {
   loginWithGoogle(
     loginWithGoogleRequestDto: LoginWithGoogleRequestDto,
   ): LoginWithGoogleResponseDto {
-    const { id, provider } = loginWithGoogleRequestDto;
+    const { userId, provider } = loginWithGoogleRequestDto;
     const payload: JwtPayload = {
-      sub: id,
+      sub: userId,
       provider,
     };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
