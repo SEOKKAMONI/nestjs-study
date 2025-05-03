@@ -9,7 +9,6 @@ import {
   HttpCode,
   Res,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import {
@@ -17,6 +16,7 @@ import {
   RefreshAccessTokenResponseDto,
 } from './dtos/refresh-access-token.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,14 +25,14 @@ export class AuthController {
 
   @Get('google')
   @HttpCode(302)
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleAuthGuard)
   @ApiOperation({ summary: 'Redirect to Google for authentication' })
   @ApiResponse({ status: 302, description: 'Redirected to Google OAuth page' })
   googleAuth() {}
 
   @Get('google/callback')
   @HttpCode(302)
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(GoogleAuthGuard)
   @ApiOperation({ summary: 'Handle Google OAuth callback' })
   @ApiResponse({
     status: 302,
