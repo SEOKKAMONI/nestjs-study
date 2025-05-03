@@ -6,7 +6,7 @@ declare global {
     interface User extends UserDto {}
 
     interface Request {
-      user?: User;
+      user: User;
     }
   }
 }

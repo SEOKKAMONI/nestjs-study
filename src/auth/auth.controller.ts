@@ -41,17 +41,13 @@ export class AuthController {
   })
   googleAuthCallback(@Req() req: Request, @Res() res: Response) {
     if (!req.user) {
-      throw new UnauthorizedException('User was not found after Google auth.');
+      throw new UnauthorizedException('User was not found');
     }
 
-    const loginWithGoogleRequestDto = {
+    const { accessToken, refreshToken } = this.authService.loginWithGoogle({
       userId: req.user.id,
       provider: req.user.provider,
-    };
-
-    const { accessToken, refreshToken } = this.authService.loginWithGoogle(
-      loginWithGoogleRequestDto,
-    );
+    });
     res.redirect(
       `http://localhost:3000/auth/google/success?access_token=${accessToken}&refresh_token=${refreshToken}`,
     );

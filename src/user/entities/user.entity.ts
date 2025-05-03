@@ -1,9 +1,11 @@
+import { TodoEntity } from 'src/todo/entities/todo.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('user')
@@ -28,6 +30,9 @@ export class UserEntity {
 
   @Column({ unique: true })
   providerId: string;
+
+  @OneToMany(() => TodoEntity, (todo) => todo.user)
+  todos: TodoEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

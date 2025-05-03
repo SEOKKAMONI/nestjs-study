@@ -3,10 +3,10 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import {
@@ -19,6 +19,9 @@ import {
 import { TodoResponseDto } from './dtos/todo.dto';
 import { CreateTodoRequestDto } from './dtos/create-todo.dto';
 import { UpdateTodoRequestDto } from './dtos/update-todo.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { User } from 'src/common/decorators/User';
+import { UserDto } from 'src/user/dtos/user.dto';
 
 @ApiTags('todo')
 @Controller('todo')
@@ -26,6 +29,7 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all todos' })
   @ApiResponse({
     status: 200,
@@ -33,11 +37,12 @@ export class TodoController {
     type: TodoResponseDto,
     isArray: true,
   })
-  async findAll(): Promise<TodoResponseDto[]> {
-    return this.todoService.findAll();
+  async findAll(@User() user: UserDto): Promise<TodoResponseDto[]> {
+    return this.todoService.findAll(user.id);
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get a todo by id' })
   @ApiResponse({
     status: 200,
@@ -49,15 +54,15 @@ export class TodoController {
     description: 'The id of the todo',
     type: String,
   })
-  async findOne(@Param('id') id: string): Promise<TodoResponseDto | null> {
-    const todo = await this.todoService.findOne(id);
-    if (!todo) {
-      throw new NotFoundException(`Todo with id ${id} not found`);
-    }
-    return todo;
+  async findOne(
+    @User() user: UserDto,
+    @Param('id') id: string,
+  ): Promise<TodoResponseDto | null> {
+    return this.todoService.findOne(user.id, id);
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new todo' })
   @ApiResponse({
     status: 201,
@@ -69,12 +74,14 @@ export class TodoController {
     type: CreateTodoRequestDto,
   })
   async create(
+    @User() user: UserDto,
     @Body() createTodoRequestDto: CreateTodoRequestDto,
   ): Promise<TodoResponseDto> {
-    return this.todoService.create(createTodoRequestDto);
+    return this.todoService.create(user.id, createTodoRequestDto);
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update a todo by id' })
   @ApiResponse({
     status: 200,
@@ -91,13 +98,15 @@ export class TodoController {
     type: String,
   })
   async update(
+    @User() user: UserDto,
     @Param('id') id: string,
     @Body() updateTodoRequestDto: UpdateTodoRequestDto,
   ): Promise<TodoResponseDto | null> {
-    return this.todoService.update(id, updateTodoRequestDto);
+    return this.todoService.update(user.id, id, updateTodoRequestDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete a todo by id' })
   @ApiResponse({
     status: 200,
@@ -108,7 +117,7 @@ export class TodoController {
     description: 'The id of the todo',
     type: String,
   })
-  async delete(@Param('id') id: string): Promise<void> {
-    return this.todoService.delete(id);
+  async delete(@User() user: UserDto, @Param('id') id: string): Promise<void> {
+    return this.todoService.delete(user.id, id);
   }
 }

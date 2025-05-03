@@ -1,7 +1,10 @@
+import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -16,6 +19,10 @@ export class TodoEntity {
 
   @Column({ default: false })
   isCompleted: boolean;
+
+  @ManyToOne(() => UserEntity, (user) => user.todos)
+  @JoinColumn({ name: 'userId' })
+  user: UserEntity;
 
   @CreateDateColumn()
   createdAt: Date;

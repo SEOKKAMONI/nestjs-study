@@ -43,7 +43,7 @@ export class AuthService {
   ): LoginWithGoogleResponseDto {
     const { userId, provider } = loginWithGoogleRequestDto;
     const payload: JwtPayload = {
-      sub: userId,
+      userId,
       provider,
     };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
@@ -57,7 +57,7 @@ export class AuthService {
     const { refreshToken } = refreshAccessTokenRequestDto;
     const payload: JwtPayload = this.jwtService.verify(refreshToken);
     const accessToken = this.jwtService.sign(
-      { sub: payload.sub, provider: payload.provider },
+      { userId: payload.userId, provider: payload.provider },
       { expiresIn: '1h' },
     );
 
