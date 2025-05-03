@@ -12,8 +12,10 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { RefreshAccessTokenRequestDto } from './dtos/requests/refresh-access-token.dto';
-import { RefreshAccessTokenResponseDto } from './dtos/responses/refresh-access-token.dto';
+import {
+  RefreshAccessTokenRequestDto,
+  RefreshAccessTokenResponseDto,
+} from './dtos/refresh-access-token.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')

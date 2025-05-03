@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
 import { IsAuthProvider } from 'src/common/decorators/IsAuthProvider';
+import { UserDto } from 'src/user/dtos/user.dto';
 
 export class ValidateRequestDto {
   @ApiProperty({
@@ -49,3 +50,5 @@ export class ValidateRequestDto {
   @IsString()
   providerId: string;
 }
+
+export class ValidateResponseDto extends UserDto {}

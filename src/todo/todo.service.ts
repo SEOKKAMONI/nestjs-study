@@ -1,8 +1,8 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { CreateTodoRequestDto } from './dtos/requests/create-todo.dto';
-import { TodoResponseDto } from './dtos/responses/todo.dto';
-import { UpdateTodoRequestDto } from './dtos/requests/update-todo.dto';
+import { CreateTodoRequestDto } from './dtos/create-todo.dto';
+import { TodoResponseDto } from './dtos/todo.dto';
+import { UpdateTodoRequestDto } from './dtos/update-todo.dto';
 import { TodoEntity } from './entities/todo.entity';
 
 @Injectable()

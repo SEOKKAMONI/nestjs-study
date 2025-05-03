@@ -8,7 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class TodoResponseDto {
+export class TodoDto {
   @ApiProperty({
     description: 'The id of the todo',
     example: '550e8400-e29b-41d4-a716-446655440000',
@@ -47,3 +47,5 @@ export class TodoResponseDto {
   @IsDate()
   updatedAt: Date;
 }
+
+export class TodoResponseDto extends TodoDto {}
